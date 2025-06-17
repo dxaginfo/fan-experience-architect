@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fan Experience Architect</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.0.0/dist/chart.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-smile me-2"></i>
+                    Fan Experience Architect
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('journey')">
+                                <i class="fas fa-route me-1"></i> Journey Map
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('personas')">
+                                <i class="fas fa-users me-1"></i> Fan Personas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('arvr')">
+                                <i class="fas fa-vr-cardboard me-1"></i> AR/VR Integration
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('analytics')">
+                                <i class="fas fa-chart-line me-1"></i> Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('templates')">
+                                <i class="fas fa-cubes me-1"></i> Templates
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="d-flex">
+                        <button class="btn btn-light" @click="loadDemo">
+                            <i class="fas fa-play me-1"></i> Load Demo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="container-fluid mt-4">
+            <!-- Welcome Screen -->
+            <div v-if="activePage === 'welcome'" class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="card shadow">
+                        <div class="card-body text-center p-5">
+                            <h1 class="display-4 mb-4">Welcome to Fan Experience Architect</h1>
+                            <p class="lead mb-4">
+                                Design personalized, engaging fan experiences for sports teams and entertainment brands
+                            </p>
+                            <div class="row mt-5">
+                                <div class="col-md-4">
+                                    <div class="card mb-4 h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-route fa-4x mb-3 text-primary"></i>
+                                            <h3>Customer Journey Mapping</h3>
+                                            <p>Map and optimize the complete fan experience journey from awareness to advocacy</p>
+                                            <button class="btn btn-primary mt-2" @click="setActivePage('journey')">
+                                                Explore Journeys
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card mb-4 h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-users-cog fa-4x mb-3 text-primary"></i>
+                                            <h3>Personalization Engine</h3>
+                                            <p>Create fan personas and personalized experience rules to increase engagement</p>
+                                            <button class="btn btn-primary mt-2" @click="setActivePage('personas')">
+                                                Create Personas
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card mb-4 h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-vr-cardboard fa-4x mb-3 text-primary"></i>
+                                            <h3>AR/VR Integration</h3>
+                                            <p>Plan and implement immersive experiences to enhance fan engagement</p>
+                                            <button class="btn btn-primary mt-2" @click="setActivePage('arvr')">
+                                                Plan AR/VR
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-5">
+                                <button class="btn btn-lg btn-success" @click="loadDemo">
+                                    <i class="fas fa-play-circle me-2"></i> Load Demo Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journey Mapping Page -->
+            <div v-if="activePage === 'journey'" class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-light">
+                            <h2><i class="fas fa-route me-2"></i>Fan Journey Mapping</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <h3>{{ currentJourney.name || 'New Journey Map' }}</h3>
+                                    <p>{{ currentJourney.description || 'Map the complete fan experience from awareness to advocacy' }}</p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button class="btn btn-primary me-2" @click="createNewJourney">
+                                        <i class="fas fa-plus me-1"></i> New Journey
+                                    </button>
+                                    <button class="btn btn-success" @click="saveJourney">
+                                        <i class="fas fa-save me-1"></i> Save
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="journey-map-container p-3 border rounded bg-light">
+                                <div class="row journey-stages">
+                                    <div v-for="(stage, index) in journeyStages" :key="index" class="col stage-column">
+                                        <div class="stage-header text-center p-2 mb-3 rounded bg-primary text-white">
+                                            {{ stage }}
+                                        </div>
+                                        <div class="touchpoints-container">
+                                            <div v-for="(touchpoint, tpIndex) in getTouchpointsForStage(stage)" 
+                                                :key="tpIndex" 
+                                                class="touchpoint-card p-3 mb-3 rounded shadow-sm"
+                                                :class="{ 'bg-success text-white': touchpoint.emotionScore > 7, 
+                                                         'bg-warning': touchpoint.emotionScore > 4 && touchpoint.emotionScore <= 7,
+                                                         'bg-danger text-white': touchpoint.emotionScore <= 4 }">
+                                                <h5>{{ touchpoint.name }}</h5>
+                                                <p><i class="fas fa-hashtag me-1"></i> {{ touchpoint.channel }}</p>
+                                                <p><i class="fas fa-smile me-1"></i> Emotion Score: {{ touchpoint.emotionScore }}/10</p>
+                                                <div class="touchpoint-actions mt-2">
+                                                    <button class="btn btn-sm btn-light me-1" @click="editTouchpoint(touchpoint)">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-light" @click="removeTouchpoint(touchpoint)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-outline-primary w-100" @click="addTouchpoint(stage)">
+                                                <i class="fas fa-plus me-1"></i> Add Touchpoint
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personas Page -->
+            <div v-if="activePage === 'personas'" class="row">
+                <div class="col-md-4">
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-light">
+                            <h3><i class="fas fa-users me-2"></i>Fan Personas</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <button class="btn btn-primary w-100" @click="createNewPersona">
+                                    <i class="fas fa-plus me-1"></i> Create New Persona
+                                </button>
+                            </div>
+                            <div class="list-group">
+                                <a href="#" 
+                                   v-for="(persona, index) in personas" 
+                                   :key="index"
+                                   class="list-group-item list-group-item-action"
+                                   :class="{'active': currentPersona && currentPersona.id === persona.id}"
+                                   @click="selectPersona(persona)">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ persona.name }}</h5>
+                                    </div>
+                                    <p class="mb-1">{{ getPersonaSummary(persona) }}</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card shadow" v-if="currentPersona">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h3>{{ currentPersona.name }}</h3>
+                            <div>
+                                <button class="btn btn-success me-2" @click="savePersona">
+                                    <i class="fas fa-save me-1"></i> Save
+                                </button>
+                                <button class="btn btn-danger" @click="deletePersona">
+                                    <i class="fas fa-trash me-1"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Persona Name</label>
+                                    <input type="text" class="form-control" v-model="currentPersona.name">
+                                </div>
+                                
+                                <h4 class="mt-4">Demographics</h4>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Age</label>
+                                            <input type="number" class="form-control" v-model="currentPersona.demographics.age">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Gender</label>
+                                            <select class="form-select" v-model="currentPersona.demographics.gender">
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                                <option value="non-binary">Non-binary</option>
+                                                <option value="prefer-not-to-say">Prefer not to say</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Location</label>
+                                            <input type="text" class="form-control" v-model="currentPersona.demographics.location">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="mt-4">Behaviors</h4>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Attendance Frequency</label>
+                                            <select class="form-select" v-model="currentPersona.behaviors.attendanceFrequency">
+                                                <option value="frequent">Frequent (10+ events/year)</option>
+                                                <option value="regular">Regular (5-9 events/year)</option>
+                                                <option value="occasional">Occasional (1-4 events/year)</option>
+                                                <option value="rarely">Rarely (less than 1/year)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Digital Engagement</label>
+                                            <select class="form-select" v-model="currentPersona.behaviors.digitalEngagement">
+                                                <option value="high">High (daily interaction)</option>
+                                                <option value="medium">Medium (weekly interaction)</option>
+                                                <option value="low">Low (monthly interaction)</option>
+                                                <option value="minimal">Minimal (rarely engages)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Spending Level</label>
+                                            <select class="form-select" v-model="currentPersona.behaviors.spendingLevel">
+                                                <option value="premium">Premium (season tickets, merchandise)</option>
+                                                <option value="mid-tier">Mid-tier (occasional tickets, some merchandise)</option>
+                                                <option value="budget">Budget-conscious (discounted tickets only)</option>
+                                                <option value="minimal">Minimal spending</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="mt-4">Preferences</h4>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Content Types</label>
+                                            <div class="form-check" v-for="(type, index) in contentTypes" :key="index">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       :value="type" 
+                                                       v-model="currentPersona.preferences.contentTypes">
+                                                <label class="form-check-label">{{ type }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Preferred Channels</label>
+                                            <div class="form-check" v-for="(channel, index) in channels" :key="index">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       :value="channel" 
+                                                       v-model="currentPersona.preferences.channels">
+                                                <label class="form-check-label">{{ channel }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Interests</label>
+                                            <div class="form-check" v-for="(interest, index) in interests" :key="index">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       :value="interest" 
+                                                       v-model="currentPersona.preferences.interests">
+                                                <label class="form-check-label">{{ interest }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="mt-4">Goals</h4>
+                                <div class="mb-3">
+                                    <div class="input-group mb-2" v-for="(goal, index) in currentPersona.goals" :key="index">
+                                        <input type="text" class="form-control" v-model="currentPersona.goals[index]">
+                                        <button class="btn btn-outline-danger" type="button" @click="removeGoal(index)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <button class="btn btn-outline-primary" @click="addGoal">
+                                        <i class="fas fa-plus me-1"></i> Add Goal
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card shadow" v-else>
+                        <div class="card-body text-center p-5">
+                            <i class="fas fa-users fa-4x mb-3 text-muted"></i>
+                            <h3>No Persona Selected</h3>
+                            <p>Select an existing persona from the list or create a new one</p>
+                            <button class="btn btn-primary mt-3" @click="createNewPersona">
+                                <i class="fas fa-plus me-1"></i> Create New Persona
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AR/VR Integration Page -->
+            <div v-if="activePage === 'arvr'" class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-light">
+                            <h2><i class="fas fa-vr-cardboard me-2"></i>AR/VR Integration Planning</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <h3>Immersive Experience Planning</h3>
+                                    <p>Plan and budget AR/VR experiences to enhance fan engagement</p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button class="btn btn-primary" @click="createNewARVRExperience">
+                                        <i class="fas fa-plus me-1"></i> New Experience
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-info text-white">
+                                            <h4>Experience Templates</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="list-group">
+                                                <a href="#" class="list-group-item list-group-item-action" 
+                                                   v-for="(template, index) in arvrTemplates" 
+                                                   :key="index"
+                                                   @click="selectARVRTemplate(template)">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <h5 class="mb-1">{{ template.name }}</h5>
+                                                        <small>{{ template.complexity }}</small>
+                                                    </div>
+                                                    <p class="mb-1">{{ template.description }}</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-8">
+                                    <div class="card" v-if="currentARVRTemplate">
+                                        <div class="card-header bg-primary text-white">
+                                            <h4>{{ currentARVRTemplate.name }}</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row mb-4">
+                                                <div class="col-md-8">
+                                                    <p><strong>Description:</strong> {{ currentARVRTemplate.description }}</p>
+                                                    <p><strong>Type:</strong> {{ currentARVRTemplate.type }}</p>
+                                                    <p><strong>Complexity:</strong> {{ currentARVRTemplate.complexity }}</p>
+                                                    <p><strong>Development Time:</strong> {{ currentARVRTemplate.developmentTime }}</p>
+                                                    <p><strong>Estimated Cost:</strong> {{ currentARVRTemplate.estimatedCost }}</p>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="text-center">
+                                                        <div class="technology-icon p-3 bg-light rounded mb-2">
+                                                            <i :class="getARVRIcon(currentARVRTemplate.type)" class="fa-4x text-primary"></i>
+                                                        </div>
+                                                        <div class="complexity-meter mt-3">
+                                                            <div class="progress">
+                                                                <div class="progress-bar" role="progressbar" 
+                                                                     :style="{width: getComplexityPercentage(currentARVRTemplate.complexity)}"
+                                                                     :class="getComplexityClass(currentARVRTemplate.complexity)">
+                                                                    {{ currentARVRTemplate.complexity }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row mb-4">
+                                                <div class="col-12">
+                                                    <h5>Benefits</h5>
+                                                    <ul class="list-group mb-3">
+                                                        <li class="list-group-item" v-for="(benefit, index) in currentARVRTemplate.benefits" :key="index">
+                                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                                            {{ benefit }}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row mb-4">
+                                                <div class="col-12">
+                                                    <h5>Implementation Requirements</h5>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered">
+                                                            <thead class="table-light">
+                                                                <tr>
+                                                                    <th>Requirement</th>
+                                                                    <th>Description</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr v-for="(req, index) in currentARVRTemplate.requirements" :key="index">
+                                                                    <td>{{ req.name }}</td>
+                                                                    <td>{{ req.description }}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-12 text-center">
+                                                    <button class="btn btn-success">
+                                                        <i class="fas fa-rocket me-1"></i> Add to Implementation Plan
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card" v-else>
+                                        <div class="card-body text-center p-5">
+                                            <i class="fas fa-vr-cardboard fa-4x mb-3 text-muted"></i>
+                                            <h3>No Experience Selected</h3>
+                                            <p>Select an experience template from the list or create a new experience</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div v-if="activePage === 'analytics'" class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-light">
+                            <h2><i class="fas fa-chart-line me-2"></i>Engagement Analytics</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <h3>Fan Engagement Dashboard</h3>
+                                    <p>Analyze fan engagement across journeys and experiences</p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <div class="btn-group">
+                                        <button class="btn btn-outline-primary" @click="setAnalyticsTimeframe('week')">Week</button>
+                                        <button class="btn btn-outline-primary" @click="setAnalyticsTimeframe('month')">Month</button>
+                                        <button class="btn btn-outline-primary" @click="setAnalyticsTimeframe('year')">Year</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-3 mb-4">
+                                    <div class="card bg-primary text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="text-uppercase mb-1">Engagement Score</h6>
+                                                    <h2 class="mb-0">8.4/10</h2>
+                                                </div>
+                                                <div>
+                                                    <i class="fas fa-smile fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <span class="badge bg-light text-primary">+0.6 from last period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-4">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="text-uppercase mb-1">Active Personas</h6>
+                                                    <h2 class="mb-0">4/5</h2>
+                                                </div>
+                                                <div>
+                                                    <i class="fas fa-users fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <span class="badge bg-light text-success">80% coverage</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-4">
+                                    <div class="card bg-info text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="text-uppercase mb-1">Touchpoints</h6>
+                                                    <h2 class="mb-0">24</h2>
+                                                </div>
+                                                <div>
+                                                    <i class="fas fa-map-pin fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <span class="badge bg-light text-info">+4 from last period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-4">
+                                    <div class="card bg-warning text-dark">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="text-uppercase mb-1">AR/VR Experiences</h6>
+                                                    <h2 class="mb-0">3</h2>
+                                                </div>
+                                                <div>
+                                                    <i class="fas fa-vr-cardboard fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <span class="badge bg-light text-warning">Planning 2 more</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-8 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-light">
+                                            <h5>Engagement Trends</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="engagementChart" width="400" height="200"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-light">
+                                            <h5>Engagement by Persona</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="personaChart" width="200" height="200"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-light">
+                                            <h5>Touchpoint Performance</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Touchpoint</th>
+                                                            <th>Stage</th>
+                                                            <th>Emotion Score</th>
+                                                            <th>Trend</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Mobile App Login</td>
+                                                            <td>Awareness</td>
+                                                            <td>8.2/10</td>
+                                                            <td><i class="fas fa-arrow-up text-success"></i></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Ticket Purchase</td>
+                                                            <td>Purchase</td>
+                                                            <td>7.5/10</td>
+                                                            <td><i class="fas fa-arrow-up text-success"></i></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Arena Entry</td>
+                                                            <td>Experience</td>
+                                                            <td>6.8/10</td>
+                                                            <td><i class="fas fa-arrow-down text-danger"></i></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>AR Experience</td>
+                                                            <td>Experience</td>
+                                                            <td>9.1/10</td>
+                                                            <td><i class="fas fa-arrow-up text-success"></i></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Post-Event Survey</td>
+                                                            <td>Advocacy</td>
+                                                            <td>5.3/10</td>
+                                                            <td><i class="fas fa-arrow-down text-danger"></i></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-light">
+                                            <h5>Improvement Recommendations</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-warning mb-3">
+                                                <div class="d-flex">
+                                                    <div class="me-3">
+                                                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5>Arena Entry Experience</h5>
+                                                        <p>Emotion score has decreased by 0.8 points. Consider adding more staff during peak entry times.</p>
+                                                        <button class="btn btn-sm btn-outline-dark">View Details</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-danger mb-3">
+                                                <div class="d-flex">
+                                                    <div class="me-3">
+                                                        <i class="fas fa-times-circle fa-2x"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5>Post-Event Survey</h5>
+                                                        <p>Low engagement rate (22%) and poor emotion score. Consider redesigning with fewer questions.</p>
+                                                        <button class="btn btn-sm btn-outline-dark">View Details</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-success mb-3">
+                                                <div class="d-flex">
+                                                    <div class="me-3">
+                                                        <i class="fas fa-check-circle fa-2x"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5>AR Experience</h5>
+                                                        <p>High emotion score and usage. Consider expanding to more areas in the venue.</p>
+                                                        <button class="btn btn-sm btn-outline-dark">View Details</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates Page -->
+            <div v-if="activePage === 'templates'" class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-light">
+                            <h2><i class="fas fa-cubes me-2"></i>Experience Templates</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <h3>Pre-Built Experience Templates</h3>
+                                    <p>Ready-to-use templates for common fan experience scenarios</p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Search templates...">
+                                        <button class="btn btn-outline-primary" type="button">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="https://via.placeholder.com/300x150?text=Arena+Experience" class="card-img-top" alt="Arena Experience">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Arena Experience Journey</h5>
+                                            <p class="card-text">A complete fan journey for in-person arena experiences, from ticket purchase to post-event engagement.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-primary">Professional Sports</span>
+                                                <button class="btn btn-sm btn-outline-primary">Use Template</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="https://via.placeholder.com/300x150?text=Digital+Experience" class="card-img-top" alt="Digital Experience">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Digital Fan Experience</h5>
+                                            <p class="card-text">A journey template for fans engaging primarily through digital channels like apps, streaming, and social media.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-success">Multi-Sport</span>
+                                                <button class="btn btn-sm btn-outline-primary">Use Template</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="https://via.placeholder.com/300x150?text=VIP+Experience" class="card-img-top" alt="VIP Experience">
+                                        <div class="card-body">
+                                            <h5 class="card-title">VIP Fan Experience</h5>
+                                            <p class="card-text">Premium journey template for high-value fans including personalized touchpoints and exclusive access.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-warning text-dark">Premium</span>
+                                                <button class="btn btn-sm btn-outline-primary">Use Template</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="https://via.placeholder.com/300x150?text=Family+Experience" class="card-img-top" alt="Family Experience">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Family Fan Experience</h5>
+                                            <p class="card-text">Journey template optimized for families with children, including age-appropriate activities and touchpoints.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-info">Family-Friendly</span>
+                                                <button class="btn btn-sm btn-outline-primary">Use Template</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="https://via.placeholder.com/300x150?text=AR+Experience" class="card-img-top" alt="AR Experience">
+                                        <div class="card-body">
+                                            <h5 class="card-title">AR-Enhanced Experience</h5>
+                                            <p class="card-text">Journey template incorporating augmented reality touchpoints for an immersive fan experience.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-secondary">Technology</span>
+                                                <button class="btn btn-sm btn-outline-primary">Use Template</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="https://via.placeholder.com/300x150?text=Festival+Experience" class="card-img-top" alt="Festival Experience">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Multi-Day Festival Experience</h5>
+                                            <p class="card-text">Complete journey template for multi-day events like music festivals, tournaments, or conventions.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-danger">Entertainment</span>
+                                                <button class="btn btn-sm btn-outline-primary">Use Template</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div class="modal fade" id="touchpointModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ editingExistingTouchpoint ? 'Edit Touchpoint' : 'Add Touchpoint' }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Touchpoint Name</label>
+                                <input type="text" class="form-control" v-model="currentTouchpoint.name">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Channel</label>
+                                <select class="form-select" v-model="currentTouchpoint.channel">
+                                    <option v-for="channel in channels" :key="channel" :value="channel">
+                                        {{ channel }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" v-model="currentTouchpoint.description" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Emotion Score (1-10)</label>
+                                <input type="range" class="form-range" min="1" max="10" v-model="currentTouchpoint.emotionScore">
+                                <div class="d-flex justify-content-between">
+                                    <span>Poor (1)</span>
+                                    <span>{{ currentTouchpoint.emotionScore }}</span>
+                                    <span>Excellent (10)</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Pain Points</label>
+                                <div class="input-group mb-2" v-for="(point, index) in currentTouchpoint.painPoints" :key="index">
+                                    <input type="text" class="form-control" v-model="currentTouchpoint.painPoints[index]">
+                                    <button class="btn btn-outline-danger" type="button" @click="removePainPoint(index)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm" @click="addPainPoint">
+                                    <i class="fas fa-plus me-1"></i> Add Pain Point
+                                </button>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Opportunities</label>
+                                <div class="input-group mb-2" v-for="(opportunity, index) in currentTouchpoint.opportunities" :key="index">
+                                    <input type="text" class="form-control" v-model="currentTouchpoint.opportunities[index]">
+                                    <button class="btn btn-outline-danger" type="button" @click="removeOpportunity(index)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm" @click="addOpportunity">
+                                    <i class="fas fa-plus me-1"></i> Add Opportunity
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" @click="saveTouchpoint">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue@3.2.31/dist/vue.global.js"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.0/dist/chart.umd.min.js"></script>
+    <!-- UUID Generation -->
+    <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
+    <!-- Main Application JS -->
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+/* Fan Experience Architect - Styles */
+
+/* General Styles */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+/* Navigation */
+.navbar-brand {
+    font-weight: 600;
+}
+
+.nav-link {
+    font-weight: 500;
+}
+
+/* Journey Map Styles */
+.journey-map-container {
+    overflow-x: auto;
+    min-height: 400px;
+}
+
+.journey-stages {
+    min-width: 900px;
+}
+
+.stage-column {
+    min-width: 200px;
+}
+
+.stage-header {
+    font-weight: 600;
+}
+
+.touchpoint-card {
+    background-color: #ffffff;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+}
+
+.touchpoint-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.touchpoint-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.touchpoint-card:hover .touchpoint-actions {
+    opacity: 1;
+}
+
+/* Persona Styles */
+.list-group-item.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* AR/VR Integration Styles */
+.technology-icon {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.complexity-meter {
+    height: 30px;
+}
+
+/* Analytics Styles */
+.badge {
+    font-weight: 500;
+}
+
+/* Templates Styles */
+.card-img-top {
+    height: 150px;
+    object-fit: cover;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .journey-stages {
+        min-width: 600px;
+    }
+    
+    .stage-column {
+        min-width: 150px;
+    }
+}
+
+/* Custom Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Utility Classes */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.min-height-400 {
+    min-height: 400px;
+}
+
+/* Touchpoint Status Colors */
+.touchpoint-excellent {
+    background-color: #28a745;
+    color: white;
+}
+
+.touchpoint-good {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.touchpoint-average {
+    background-color: #ffc107;
+}
+
+.touchpoint-poor {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Progress Bar Styles */
+.progress {
+    height: 0.75rem;
+    border-radius: 1rem;
+}
+
+.progress-bar {
+    border-radius: 1rem;
+}
+
+/* Dashboard Card Styles */
+.dashboard-card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Experience Template Card Styles */
+.template-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.template-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Chart Container Styles */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Custom Form Controls */
+.form-range::-webkit-slider-thumb {
+    background: #0d6efd;
+}
+
+.form-range::-webkit-slider-runnable-track {
+    background: #e9ecef;
+}
+
+/* Experience Type Badges */
+.experience-type-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+/* Recommendations Styles */
+.recommendation-card {
+    border-left: 4px solid;
+}
+
+.recommendation-card.high {
+    border-left-color: #dc3545;
+}
+
+.recommendation-card.medium {
+    border-left-color: #ffc107;
+}
+
+.recommendation-card.low {
+    border-left-color: #28a745;
+}
